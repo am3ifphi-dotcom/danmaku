@@ -1,0 +1,13 @@
+{
+  "name": "tokoyozakura-qa",
+  "version": "1.0.0",
+  "description": "QA harness for 常夜桜 (pure Node, no deps required at runtime)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {}
+}

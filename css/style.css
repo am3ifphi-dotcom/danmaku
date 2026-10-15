@@ -1,0 +1,27 @@
+@font-face{
+  font-family:"DotGothic16";
+  src:url("../assets/fonts/dotgothic16-subset.woff2") format("woff2");
+  font-weight:normal;font-style:normal;font-display:swap;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  width:100%;height:100%;overflow:hidden;background:#030309;
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;
+  touch-action:none;overscroll-behavior:none;
+}
+#frame{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(120% 90% at 50% 8%, #10132e 0%, #070a1e 55%, #030309 100%);
+}
+#game{
+  image-rendering:pixelated;image-rendering:crisp-edges;
+  background:#070a1e;
+  box-shadow:0 0 60px rgba(80,90,255,.18), 0 0 220px rgba(255,120,180,.07);
+  touch-action:none;
+}
+#boot-msg{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  color:#8fa0ff;font-family:monospace;font-size:14px;letter-spacing:.2em;
+  pointer-events:none;text-shadow:0 0 12px rgba(90,110,255,.6);
+}
+body.playing #boot-msg{display:none}
