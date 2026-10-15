@@ -673,12 +673,12 @@ export class Game {
       text(g, v, 460, 140 + i * 30, 16, i === 5 ? '#ffe27a' : '#ffffff', 'right');
     });
     // reward coins
-    text(g, 'REWARD', 180, 330, 16, '#c9dde8');
+    text(g, 'REWARD', 180, 312, 16, '#c9dde8');
     const coin = this.sprites.map['coin'][0];
     const n = Math.min(r.coins, 16);
-    for (let i = 0; i < n; i++) g.drawImage(coin, 260 + i * 20, 326, 16, 16);
-    if (r.coins > 16) text(g, `+${r.coins - 16}`, 260 + 16 * 20 + 6, 330, 16, '#ffe27a');
-    if (r.nomiss) text(g, 'NO MISS!', W / 2 + 120, 330, 16, '#7fe3b4');
+    for (let i = 0; i < n; i++) g.drawImage(coin, 260 + i * 20, 308, 16, 16);
+    if (r.coins > 16) text(g, `+${r.coins - 16}`, 260 + 16 * 20 + 6, 312, 16, '#ffe27a');
+    if (r.nomiss) text(g, 'NO MISS!', W / 2 + 120, 312, 16, '#7fe3b4');
     text(g, 'Enter で選択画面へ', W / 2, H - 30, 16, '#9fbed0', 'center');
   }
 
