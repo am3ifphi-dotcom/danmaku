@@ -1,0 +1,44 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+}
+
+/* The logical 640x360 canvas is scaled to the window; object-fit keeps the 16:9 frame (letterboxed). */
+canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
+  image-rendering: pixelated;
+  touch-action: none;
+  display: block;
+}
+
+#loading {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #9ff6e4;
+  font-family: DotGothic16, monospace;
+  font-size: 24px;
+  background: #081823;
+}
+
+/* Small fullscreen toggle (faint, for touch devices). Keyboard users can press F. */
+#fs {
+  position: fixed;
+  right: 6px;
+  bottom: 6px;
+  opacity: 0.3;
+  background: transparent;
+  border: 1px solid #889;
+  color: #cdd;
+  font: 12px monospace;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+#fs:hover, #fs:focus { opacity: 0.9; }

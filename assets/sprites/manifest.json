@@ -1,0 +1,395 @@
+{
+ "crabby/01-idle": [
+  "assets/sprites/crabby/01-idle/00.png",
+  "assets/sprites/crabby/01-idle/01.png",
+  "assets/sprites/crabby/01-idle/02.png",
+  "assets/sprites/crabby/01-idle/03.png",
+  "assets/sprites/crabby/01-idle/04.png",
+  "assets/sprites/crabby/01-idle/05.png",
+  "assets/sprites/crabby/01-idle/06.png",
+  "assets/sprites/crabby/01-idle/07.png",
+  "assets/sprites/crabby/01-idle/08.png"
+ ],
+ "crabby/02-run": [
+  "assets/sprites/crabby/02-run/00.png",
+  "assets/sprites/crabby/02-run/01.png",
+  "assets/sprites/crabby/02-run/02.png",
+  "assets/sprites/crabby/02-run/03.png",
+  "assets/sprites/crabby/02-run/04.png",
+  "assets/sprites/crabby/02-run/05.png"
+ ],
+ "crabby/03-jump": [
+  "assets/sprites/crabby/03-jump/00.png",
+  "assets/sprites/crabby/03-jump/01.png",
+  "assets/sprites/crabby/03-jump/02.png"
+ ],
+ "crabby/04-fall": [
+  "assets/sprites/crabby/04-fall/00.png"
+ ],
+ "crabby/05-ground": [
+  "assets/sprites/crabby/05-ground/00.png",
+  "assets/sprites/crabby/05-ground/01.png"
+ ],
+ "crabby/06-anticipation": [
+  "assets/sprites/crabby/06-anticipation/00.png",
+  "assets/sprites/crabby/06-anticipation/01.png",
+  "assets/sprites/crabby/06-anticipation/02.png"
+ ],
+ "crabby/07-attack": [
+  "assets/sprites/crabby/07-attack/00.png",
+  "assets/sprites/crabby/07-attack/01.png",
+  "assets/sprites/crabby/07-attack/02.png",
+  "assets/sprites/crabby/07-attack/03.png"
+ ],
+ "crabby/08-hit": [
+  "assets/sprites/crabby/08-hit/00.png",
+  "assets/sprites/crabby/08-hit/01.png",
+  "assets/sprites/crabby/08-hit/02.png",
+  "assets/sprites/crabby/08-hit/03.png"
+ ],
+ "crabby/09-dead_hit": [
+  "assets/sprites/crabby/09-dead_hit/00.png",
+  "assets/sprites/crabby/09-dead_hit/01.png",
+  "assets/sprites/crabby/09-dead_hit/02.png",
+  "assets/sprites/crabby/09-dead_hit/03.png"
+ ],
+ "crabby/10-dead_ground": [
+  "assets/sprites/crabby/10-dead_ground/00.png",
+  "assets/sprites/crabby/10-dead_ground/01.png",
+  "assets/sprites/crabby/10-dead_ground/02.png",
+  "assets/sprites/crabby/10-dead_ground/03.png"
+ ],
+ "crabby/11-attack_effect": [
+  "assets/sprites/crabby/11-attack_effect/00.png",
+  "assets/sprites/crabby/11-attack_effect/01.png",
+  "assets/sprites/crabby/11-attack_effect/02.png"
+ ],
+ "crabby_attack_fx": [
+  "assets/sprites/crabby_attack_fx/00.png",
+  "assets/sprites/crabby_attack_fx/01.png",
+  "assets/sprites/crabby_attack_fx/02.png"
+ ],
+ "seashell/pearl_destroyed": [
+  "assets/sprites/seashell/pearl_destroyed/00.png",
+  "assets/sprites/seashell/pearl_destroyed/01.png",
+  "assets/sprites/seashell/pearl_destroyed/02.png"
+ ],
+ "seashell/pearl_idle": [
+  "assets/sprites/seashell/pearl_idle/00.png"
+ ],
+ "seashell/seashell_bite": [
+  "assets/sprites/seashell/seashell_bite/00.png",
+  "assets/sprites/seashell/seashell_bite/01.png",
+  "assets/sprites/seashell/seashell_bite/02.png",
+  "assets/sprites/seashell/seashell_bite/03.png",
+  "assets/sprites/seashell/seashell_bite/04.png",
+  "assets/sprites/seashell/seashell_bite/05.png"
+ ],
+ "seashell/seashell_destroyed": [
+  "assets/sprites/seashell/seashell_destroyed/00.png",
+  "assets/sprites/seashell/seashell_destroyed/01.png",
+  "assets/sprites/seashell/seashell_destroyed/02.png",
+  "assets/sprites/seashell/seashell_destroyed/03.png",
+  "assets/sprites/seashell/seashell_destroyed/04.png"
+ ],
+ "seashell/seashell_fire": [
+  "assets/sprites/seashell/seashell_fire/00.png",
+  "assets/sprites/seashell/seashell_fire/01.png",
+  "assets/sprites/seashell/seashell_fire/02.png",
+  "assets/sprites/seashell/seashell_fire/03.png",
+  "assets/sprites/seashell/seashell_fire/04.png",
+  "assets/sprites/seashell/seashell_fire/05.png"
+ ],
+ "seashell/seashell_hit": [
+  "assets/sprites/seashell/seashell_hit/00.png",
+  "assets/sprites/seashell/seashell_hit/01.png",
+  "assets/sprites/seashell/seashell_hit/02.png",
+  "assets/sprites/seashell/seashell_hit/03.png"
+ ],
+ "seashell/seashell_idle": [
+  "assets/sprites/seashell/seashell_idle/00.png"
+ ],
+ "seashell/seashell_opening": [
+  "assets/sprites/seashell/seashell_opening/00.png",
+  "assets/sprites/seashell/seashell_opening/01.png",
+  "assets/sprites/seashell/seashell_opening/02.png",
+  "assets/sprites/seashell/seashell_opening/03.png",
+  "assets/sprites/seashell/seashell_opening/04.png"
+ ],
+ "cannon/cannon_ball_destroyed": [
+  "assets/sprites/cannon/cannon_ball_destroyed/00.png",
+  "assets/sprites/cannon/cannon_ball_destroyed/01.png",
+  "assets/sprites/cannon/cannon_ball_destroyed/02.png"
+ ],
+ "cannon/cannon_ball_explosion": [
+  "assets/sprites/cannon/cannon_ball_explosion/00.png",
+  "assets/sprites/cannon/cannon_ball_explosion/01.png",
+  "assets/sprites/cannon/cannon_ball_explosion/02.png",
+  "assets/sprites/cannon/cannon_ball_explosion/03.png",
+  "assets/sprites/cannon/cannon_ball_explosion/04.png",
+  "assets/sprites/cannon/cannon_ball_explosion/05.png",
+  "assets/sprites/cannon/cannon_ball_explosion/06.png"
+ ],
+ "cannon/cannon_ball_idle": [
+  "assets/sprites/cannon/cannon_ball_idle/00.png"
+ ],
+ "cannon/cannon_destroyed": [
+  "assets/sprites/cannon/cannon_destroyed/00.png",
+  "assets/sprites/cannon/cannon_destroyed/01.png",
+  "assets/sprites/cannon/cannon_destroyed/02.png",
+  "assets/sprites/cannon/cannon_destroyed/03.png"
+ ],
+ "cannon/cannon_fire_effect": [
+  "assets/sprites/cannon/cannon_fire_effect/00.png",
+  "assets/sprites/cannon/cannon_fire_effect/01.png",
+  "assets/sprites/cannon/cannon_fire_effect/02.png",
+  "assets/sprites/cannon/cannon_fire_effect/03.png",
+  "assets/sprites/cannon/cannon_fire_effect/04.png",
+  "assets/sprites/cannon/cannon_fire_effect/05.png"
+ ],
+ "cannon/cannon_fire": [
+  "assets/sprites/cannon/cannon_fire/00.png",
+  "assets/sprites/cannon/cannon_fire/01.png",
+  "assets/sprites/cannon/cannon_fire/02.png",
+  "assets/sprites/cannon/cannon_fire/03.png",
+  "assets/sprites/cannon/cannon_fire/04.png",
+  "assets/sprites/cannon/cannon_fire/05.png"
+ ],
+ "cannon/cannon_hit": [
+  "assets/sprites/cannon/cannon_hit/00.png",
+  "assets/sprites/cannon/cannon_hit/01.png",
+  "assets/sprites/cannon/cannon_hit/02.png",
+  "assets/sprites/cannon/cannon_hit/03.png"
+ ],
+ "cannon/cannon_idle": [
+  "assets/sprites/cannon/cannon_idle/00.png"
+ ],
+ "totem1/attack_1": [
+  "assets/sprites/totem1/attack_1/00.png",
+  "assets/sprites/totem1/attack_1/01.png",
+  "assets/sprites/totem1/attack_1/02.png",
+  "assets/sprites/totem1/attack_1/03.png",
+  "assets/sprites/totem1/attack_1/04.png",
+  "assets/sprites/totem1/attack_1/05.png"
+ ],
+ "totem1/attack_2": [
+  "assets/sprites/totem1/attack_2/00.png",
+  "assets/sprites/totem1/attack_2/01.png",
+  "assets/sprites/totem1/attack_2/02.png",
+  "assets/sprites/totem1/attack_2/03.png",
+  "assets/sprites/totem1/attack_2/04.png",
+  "assets/sprites/totem1/attack_2/05.png"
+ ],
+ "totem1/destroyed": [
+  "assets/sprites/totem1/destroyed/00.png",
+  "assets/sprites/totem1/destroyed/01.png",
+  "assets/sprites/totem1/destroyed/02.png",
+  "assets/sprites/totem1/destroyed/03.png",
+  "assets/sprites/totem1/destroyed/04.png",
+  "assets/sprites/totem1/destroyed/05.png"
+ ],
+ "totem1/hit_1": [
+  "assets/sprites/totem1/hit_1/00.png",
+  "assets/sprites/totem1/hit_1/01.png",
+  "assets/sprites/totem1/hit_1/02.png",
+  "assets/sprites/totem1/hit_1/03.png"
+ ],
+ "totem1/hit_2": [
+  "assets/sprites/totem1/hit_2/00.png",
+  "assets/sprites/totem1/hit_2/01.png",
+  "assets/sprites/totem1/hit_2/02.png",
+  "assets/sprites/totem1/hit_2/03.png"
+ ],
+ "totem1/idle_1": [
+  "assets/sprites/totem1/idle_1/00.png"
+ ],
+ "totem1/idle_2": [
+  "assets/sprites/totem1/idle_2/00.png"
+ ],
+ "totem2/attack_1": [
+  "assets/sprites/totem2/attack_1/00.png",
+  "assets/sprites/totem2/attack_1/01.png",
+  "assets/sprites/totem2/attack_1/02.png",
+  "assets/sprites/totem2/attack_1/03.png",
+  "assets/sprites/totem2/attack_1/04.png",
+  "assets/sprites/totem2/attack_1/05.png"
+ ],
+ "totem2/attack_2": [
+  "assets/sprites/totem2/attack_2/00.png",
+  "assets/sprites/totem2/attack_2/01.png",
+  "assets/sprites/totem2/attack_2/02.png",
+  "assets/sprites/totem2/attack_2/03.png",
+  "assets/sprites/totem2/attack_2/04.png",
+  "assets/sprites/totem2/attack_2/05.png"
+ ],
+ "totem2/destroyed": [
+  "assets/sprites/totem2/destroyed/00.png",
+  "assets/sprites/totem2/destroyed/01.png",
+  "assets/sprites/totem2/destroyed/02.png",
+  "assets/sprites/totem2/destroyed/03.png",
+  "assets/sprites/totem2/destroyed/04.png",
+  "assets/sprites/totem2/destroyed/05.png"
+ ],
+ "totem2/hit_1": [
+  "assets/sprites/totem2/hit_1/00.png",
+  "assets/sprites/totem2/hit_1/01.png",
+  "assets/sprites/totem2/hit_1/02.png",
+  "assets/sprites/totem2/hit_1/03.png"
+ ],
+ "totem2/hit_2": [
+  "assets/sprites/totem2/hit_2/00.png",
+  "assets/sprites/totem2/hit_2/01.png",
+  "assets/sprites/totem2/hit_2/02.png",
+  "assets/sprites/totem2/hit_2/03.png"
+ ],
+ "totem2/idle_1": [
+  "assets/sprites/totem2/idle_1/00.png"
+ ],
+ "totem2/idle_2": [
+  "assets/sprites/totem2/idle_2/00.png"
+ ],
+ "totem3/attack_1": [
+  "assets/sprites/totem3/attack_1/00.png",
+  "assets/sprites/totem3/attack_1/01.png",
+  "assets/sprites/totem3/attack_1/02.png",
+  "assets/sprites/totem3/attack_1/03.png",
+  "assets/sprites/totem3/attack_1/04.png",
+  "assets/sprites/totem3/attack_1/05.png"
+ ],
+ "totem3/attack_2": [
+  "assets/sprites/totem3/attack_2/00.png",
+  "assets/sprites/totem3/attack_2/01.png",
+  "assets/sprites/totem3/attack_2/02.png",
+  "assets/sprites/totem3/attack_2/03.png",
+  "assets/sprites/totem3/attack_2/04.png",
+  "assets/sprites/totem3/attack_2/05.png"
+ ],
+ "totem3/destroyed": [
+  "assets/sprites/totem3/destroyed/00.png",
+  "assets/sprites/totem3/destroyed/01.png",
+  "assets/sprites/totem3/destroyed/02.png",
+  "assets/sprites/totem3/destroyed/03.png",
+  "assets/sprites/totem3/destroyed/04.png",
+  "assets/sprites/totem3/destroyed/05.png"
+ ],
+ "totem3/hit_1": [
+  "assets/sprites/totem3/hit_1/00.png",
+  "assets/sprites/totem3/hit_1/01.png",
+  "assets/sprites/totem3/hit_1/02.png",
+  "assets/sprites/totem3/hit_1/03.png"
+ ],
+ "totem3/hit_2": [
+  "assets/sprites/totem3/hit_2/00.png",
+  "assets/sprites/totem3/hit_2/01.png",
+  "assets/sprites/totem3/hit_2/02.png",
+  "assets/sprites/totem3/hit_2/03.png"
+ ],
+ "totem3/idle_1": [
+  "assets/sprites/totem3/idle_1/00.png"
+ ],
+ "totem3/idle_2": [
+  "assets/sprites/totem3/idle_2/00.png"
+ ],
+ "player/01-idle": [
+  "assets/sprites/player/01-idle/00.png",
+  "assets/sprites/player/01-idle/01.png",
+  "assets/sprites/player/01-idle/02.png",
+  "assets/sprites/player/01-idle/03.png",
+  "assets/sprites/player/01-idle/04.png"
+ ],
+ "player/02-run": [
+  "assets/sprites/player/02-run/00.png",
+  "assets/sprites/player/02-run/01.png",
+  "assets/sprites/player/02-run/02.png",
+  "assets/sprites/player/02-run/03.png",
+  "assets/sprites/player/02-run/04.png",
+  "assets/sprites/player/02-run/05.png"
+ ],
+ "player/03-jump": [
+  "assets/sprites/player/03-jump/00.png",
+  "assets/sprites/player/03-jump/01.png",
+  "assets/sprites/player/03-jump/02.png"
+ ],
+ "player/04-fall": [
+  "assets/sprites/player/04-fall/00.png"
+ ],
+ "player/05-ground": [
+  "assets/sprites/player/05-ground/00.png",
+  "assets/sprites/player/05-ground/01.png"
+ ],
+ "player/06-hit": [
+  "assets/sprites/player/06-hit/00.png",
+  "assets/sprites/player/06-hit/01.png",
+  "assets/sprites/player/06-hit/02.png",
+  "assets/sprites/player/06-hit/03.png"
+ ],
+ "player/07-dead_hit": [
+  "assets/sprites/player/07-dead_hit/00.png",
+  "assets/sprites/player/07-dead_hit/01.png",
+  "assets/sprites/player/07-dead_hit/02.png",
+  "assets/sprites/player/07-dead_hit/03.png"
+ ],
+ "player/08-dead_ground": [
+  "assets/sprites/player/08-dead_ground/00.png",
+  "assets/sprites/player/08-dead_ground/01.png",
+  "assets/sprites/player/08-dead_ground/02.png",
+  "assets/sprites/player/08-dead_ground/03.png"
+ ],
+ "dust": [
+  "assets/sprites/dust/00.png",
+  "assets/sprites/dust/01.png",
+  "assets/sprites/dust/02.png",
+  "assets/sprites/dust/03.png",
+  "assets/sprites/dust/04.png",
+  "assets/sprites/dust/05.png",
+  "assets/sprites/dust/06.png",
+  "assets/sprites/dust/07.png",
+  "assets/sprites/dust/08.png",
+  "assets/sprites/dust/09.png",
+  "assets/sprites/dust/10.png",
+  "assets/sprites/dust/11.png",
+  "assets/sprites/dust/12.png",
+  "assets/sprites/dust/13.png",
+  "assets/sprites/dust/14.png",
+  "assets/sprites/dust/15.png"
+ ],
+ "coin": [
+  "assets/sprites/coin/00.png",
+  "assets/sprites/coin/01.png",
+  "assets/sprites/coin/02.png",
+  "assets/sprites/coin/03.png"
+ ],
+ "diamond_red": [
+  "assets/sprites/diamond_red/00.png",
+  "assets/sprites/diamond_red/01.png",
+  "assets/sprites/diamond_red/02.png",
+  "assets/sprites/diamond_red/03.png"
+ ],
+ "diamond_blue": [
+  "assets/sprites/diamond_blue/00.png",
+  "assets/sprites/diamond_blue/01.png",
+  "assets/sprites/diamond_blue/02.png",
+  "assets/sprites/diamond_blue/03.png"
+ ],
+ "cloud_bg": [
+  "assets/sprites/cloud_bg/00.png",
+  "assets/sprites/cloud_bg/01.png",
+  "assets/sprites/cloud_bg/02.png",
+  "assets/sprites/cloud_bg/03.png",
+  "assets/sprites/cloud_bg/04.png",
+  "assets/sprites/cloud_bg/05.png",
+  "assets/sprites/cloud_bg/06.png",
+  "assets/sprites/cloud_bg/07.png",
+  "assets/sprites/cloud_bg/08.png",
+  "assets/sprites/cloud_bg/09.png",
+  "assets/sprites/cloud_bg/10.png",
+  "assets/sprites/cloud_bg/11.png",
+  "assets/sprites/cloud_bg/12.png",
+  "assets/sprites/cloud_bg/13.png",
+  "assets/sprites/cloud_bg/14.png",
+  "assets/sprites/cloud_bg/15.png",
+  "assets/sprites/cloud_bg/16.png",
+  "assets/sprites/cloud_bg/17.png",
+  "assets/sprites/cloud_bg/18.png"
+ ]
+}
