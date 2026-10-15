@@ -3,6 +3,9 @@ export const W = 640;          // logical play-field width (px)
 export const H = 360;          // logical play-field height (px)
 export const FPS = 60;         // fixed simulation rate
 export const SPRITE_SCALE = 2; // Pixel Frog sprites are drawn at an integer 2x to keep pixels crisp
+// Player sprite opacity: translucent so bullets behind the ship stay readable.
+// The hitbox dot is always drawn fully opaque.
+export const PLAYER_ALPHA = 0.5;
 export const SAVE_KEY = 'danmaku-save-v1';
 
 // Difficulty table. Only numeric knobs; the phase scripts read these.

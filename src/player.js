@@ -1,6 +1,6 @@
 // Player: Captain Clown Nose (Pixel Frog, CC0). Never attacks — dodging only.
 // Small hit circle (2.5px) and a larger graze circle (14px). Focus (Shift) halves speed.
-import { W, H, SPRITE_SCALE } from './config.js';
+import { W, H, SPRITE_SCALE, PLAYER_ALPHA } from './config.js';
 
 export class Player {
   constructor(sprites, diff) {
@@ -84,6 +84,7 @@ export class Player {
     g.imageSmoothingEnabled = false;
     g.translate(Math.round(this.x), Math.round(this.y));
     g.scale(this.facing, 1);
+    g.globalAlpha = PLAYER_ALPHA;
     g.drawImage(img, Math.round(-w / 2), Math.round(-h / 2) - 4, w, h);
     g.restore();
     // hitbox dot (always visible but tiny; ring when focused so the player can see it)
