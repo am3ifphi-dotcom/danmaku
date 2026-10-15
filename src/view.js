@@ -22,6 +22,15 @@ const FOLLOW = 0.035;         // camera eases toward its target this fraction pe
 const FOLLOW_FRAC = 0.4;      // camera moves only 40% of the ship's up/down travel, so depth changes stay visible
 const REST_Y = 304;           // the ship's resting field y (the camera's reference point)
 
+// Fixed reference camera for the floor: the camera position when the ship rests at REST_Y.
+const REF_CAMZ = (H - REST_Y) - BACK;
+function refProject(x, y) {
+  let d = (H - y) - REF_CAMZ;
+  if (d < MIN_D) d = MIN_D;
+  const s = BACK / d;
+  return { x: W / 2 + (x - W / 2) * s, y: HORIZON + CAM_H * s, s };
+}
+
 export const smooth = k => k * k * (3 - 2 * k);
 export const lerp = (a, b, t) => a + (b - a) * t;
 
@@ -63,8 +72,9 @@ export class View {
   // Vertical squash for ground-plane circles (rings, safe zone).
   squash() { return lerp(1, FLAT, this.e); }
 
-  // Floor: horizon glow, static cross lines and lane lines. No stage scroll: the stage stays still,
-  // the boss on the far plane is the only source of the attack.
+  // Floor: horizon glow, cross lines and lane lines. The floor is FIXED on screen: it is projected
+  // with the constant reference camera (REF_CAMZ), not the moving chase camera, so it never slides.
+  // Only the ship, boss and bullets follow the camera. Nothing on the floor scrolls.
   drawFloor(g, base, line) {
     const e = this.e;
     if (e <= 0) return;
@@ -77,23 +87,23 @@ export class View {
     g.globalAlpha = 0.5 * e;
     g.fillStyle = line;
     g.fillRect(0, HORIZON, W, 1);
-    // cross lines: constant field y, so each is a horizontal screen line that gets denser toward the bottom
+    // cross lines: fixed field rows, drawn at their fixed reference perspective
     g.strokeStyle = line;
     g.lineWidth = 1;
     const STEP = 34, span = H + 200;
     for (let z = STEP; z < span; z += STEP) {
       const y = H - z;
       if (y < -60 || y > H + 60) continue;
-      const p = this.P(0, y);
+      const p = refProject(0, y);
       if (p.y < HORIZON + 1 || p.y > H) continue;
       g.globalAlpha = Math.min(0.5, 0.12 + 0.45 * p.s) * e;
-      const a = this.P(-400, y), b = this.P(W + 400, y);
+      const a = refProject(-400, y), b = refProject(W + 400, y);
       g.beginPath(); g.moveTo(a.x, p.y); g.lineTo(b.x, p.y); g.stroke();
     }
     // lane lines: converge toward the vanishing point at the horizon
-    const yNear = Math.min(H, H - this.camZ - MIN_D);
+    const yNear = Math.min(H, H - REF_CAMZ - MIN_D);
     for (let x = 0; x <= W; x += 80) {
-      const a = this.P(x, -40), b = this.P(x, yNear);
+      const a = refProject(x, -40), b = refProject(x, yNear);
       g.globalAlpha = 0.22 * e;
       g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
     }
