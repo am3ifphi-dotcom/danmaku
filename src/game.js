@@ -37,7 +37,8 @@ class StageRun {
     this.boss.homeX = W / 2; this.boss.homeY = 96;
     this.B = new Bullets();
     this.fx = new FX(game.sprites);
-    this.view = new View();  // pseudo-3D camera (only active in phases with cam3d)
+    this.view = new View();  // pseudo-3D view (only active in phases with cam3d; the camera is fixed)
+    this.bgFreeze = 0;       // stops the background drift (stripes, clouds) while 3D is on
     this.phaseIdx = 0;
     this.phaseT = 0;     // frames in phase
     this.T = 0;          // frames in stage (play only)
@@ -139,7 +140,8 @@ class StageRun {
     this.B.update(this.player, this.state === 'play' && this.player.invuln === 0 && this.player.down === 0);
     this.player.update(this.game.inputState());
     // camera: trails the ship (damped), so the ship visibly moves in depth; 3D blend only in cam3d phases
-    this.view.update(this.player.y, this.state === 'play' && !!(this.phase && this.phase.cam3d));
+    this.view.update(this.state === 'play' && !!(this.phase && this.phase.cam3d));
+    this.bgFreeze += this.view.e;
   }
 
   updateIntro() {
@@ -263,6 +265,8 @@ class StageRun {
     g.drawImage(this.bg, 0, 0);
     const d = this.def;
     const e = this.view.e;
+    // drift clock: normal 2D motion, frozen once the 3D floor takes over (no stage flow in 3D)
+    const tb = t - this.bgFreeze;
     // depth floor (cam3d phases) — the flat sea band fades out as the floor takes over
     if (e > 0) this.view.drawFloor(g, d.bg.sea, d.bg.accent);
     // sea band
@@ -271,7 +275,7 @@ class StageRun {
     g.fillRect(0, H - 56, W, 56);
     g.fillStyle = d.bg.accent;
     for (let y = H - 52; y < H; y += 8) {
-      const off = ((t * 0.5 + y * 3) % 48);
+      const off = ((tb * 0.5 + y * 3) % 48);
       for (let x = -off; x < W; x += 48) g.fillRect(Math.round(x), y, 16, 1);
     }
     g.globalAlpha = 1;
@@ -279,7 +283,7 @@ class StageRun {
     const clouds = this.S.map['cloud_bg'];
     const c1 = clouds[4], c2 = clouds[5], c3 = clouds[6];
     g.globalAlpha = 0.22;
-    const cx = (t * 0.15) % (W + 300);
+    const cx = (tb * 0.15) % (W + 300);
     g.drawImage(c1, Math.round(W - cx + 100), 40, c1.width * 2, c1.height * 2);
     g.globalAlpha = 0.16;
     g.drawImage(c2, Math.round(cx - 260), 110, c2.width * 2, c2.height * 2);

@@ -1,34 +1,32 @@
-// Pseudo-3D chase camera for selected phases (visual only).
+// Pseudo-3D view for selected phases (visual only).
 //
-// Gameplay stays 100% on the 2D field (x in 0..640, y in 0..360). Collision, spawning and
-// movement never change. Only drawing is projected:
-//   * the field is treated as a floor. y increases toward the player (near), decreases away (far);
-//   * the camera sits BACK units behind the player (in field depth), so the player stays on screen
-//     and moving the ship up/down reads as moving forward/backward in depth;
-//   * the camera follows only part of the ship's up/down travel (FOLLOW_FRAC) with damping, so the ship
-//     visibly moves in depth (its screen height and scale change) instead of being pinned to one spot;
+// Gameplay stays 100% on the 2D field (x in 0..640, y in 0..360). Collision, spawning and movement
+// never change. Only drawing is projected:
+//   * the field is a ground plane. y increases toward the player (near), decreases away (far);
+//   * the camera is FIXED: it sits BACK units behind the rest position of the ship. The floor does not
+//     move at all. The ship moves across the plane: moving up/down changes its screen height and scale
+//     (depth). The boss sits on the far part of the same plane and attacks toward the ship;
 //   * k blends between the flat 2D view (k=0) and the perspective view (k=1) over ~1 s, so a phase
 //     start/end is a continuous transition, not a cut.
 // Every draw helper below returns the identity mapping when k=0, so 2D phases are unchanged.
 import { W, H } from './config.js';
 
-export const BACK = 200;      // camera distance behind the player (field depth units)
-export const CAM_H = 250;     // screen px from horizon to the player's ground point (player depth)
+export const BACK = 200;      // camera distance behind the rest position (field depth units)
+export const CAM_H = 250;     // screen px from horizon to the rest ground point (depth of the rest point)
 export const HORIZON = 40;    // screen y of the horizon
+const REST_Y = 304;           // the ship's resting field y (the camera's reference point)
 const MIN_D = 8;              // depth clamp for anything at / behind the camera plane
 const FLAT = 0.5;             // vertical squash of ground-plane circles in 3D
 const BLEND_STEP = 1 / 60;    // k changes by this per frame (≈1 s to fully switch)
-const FOLLOW = 0.035;         // camera eases toward its target this fraction per frame (smooth)
-const FOLLOW_FRAC = 0.4;      // camera moves only 40% of the ship's up/down travel, so depth changes stay visible
-const REST_Y = 304;           // the ship's resting field y (the camera's reference point)
 
-// Fixed reference camera for the floor: the camera position when the ship rests at REST_Y.
-const REF_CAMZ = (H - REST_Y) - BACK;
-function refProject(x, y) {
-  let d = (H - y) - REF_CAMZ;
+// The camera position, fixed for the whole phase.
+const CAMZ = (H - REST_Y) - BACK;
+
+function projectWith(camZ, x, y) {
+  let d = (H - y) - camZ;
   if (d < MIN_D) d = MIN_D;
   const s = BACK / d;
-  return { x: W / 2 + (x - W / 2) * s, y: HORIZON + CAM_H * s, s };
+  return { x: W / 2 + (x - W / 2) * s, y: HORIZON + CAM_H * s, s, d };
 }
 
 export const smooth = k => k * k * (3 - 2 * k);
@@ -36,29 +34,22 @@ export const lerp = (a, b, t) => a + (b - a) * t;
 
 export class View {
   constructor() {
-    this.k = 0;        // linear blend 0..1
-    this.camZ = null;  // camera position along the depth axis (smoothed)
+    this.k = 0;          // linear blend 0..1
+    this.camZ = CAMZ;    // fixed camera position along the depth axis
   }
 
   get e() { return smooth(this.k); }
   get on() { return this.k > 0; }
 
-  // Call once per frame. playerY: the player's field y. want3d: the current phase requests 3D.
-  update(playerY, want3d) {
-    const anchor = REST_Y + (playerY - REST_Y) * FOLLOW_FRAC; // partial follow
-    const target = (H - anchor) - BACK;
-    if (this.camZ === null) this.camZ = target;
-    this.camZ += (target - this.camZ) * FOLLOW; // damped follow: the ship moves in depth on screen
+  // Call once per frame. want3d: the current phase requests 3D.
+  update(want3d) {
     const goal = want3d ? 1 : 0;
     this.k = Math.min(1, Math.max(0, this.k + Math.sign(goal - this.k) * BLEND_STEP));
   }
 
-  // Pure perspective projection of a field point onto the screen (ground plane).
+  // Perspective projection of a field point onto the screen (ground plane), fixed camera.
   project(x, y) {
-    let d = (H - y) - this.camZ;
-    if (d < MIN_D) d = MIN_D;
-    const s = BACK / d;
-    return { x: W / 2 + (x - W / 2) * s, y: HORIZON + CAM_H * s, s, d };
+    return projectWith(this.camZ, x, y);
   }
 
   // Blended point: field position at k=0, perspective position at k=1. s is the draw scale.
@@ -72,9 +63,7 @@ export class View {
   // Vertical squash for ground-plane circles (rings, safe zone).
   squash() { return lerp(1, FLAT, this.e); }
 
-  // Floor: horizon glow, cross lines and lane lines. The floor is FIXED on screen: it is projected
-  // with the constant reference camera (REF_CAMZ), not the moving chase camera, so it never slides.
-  // Only the ship, boss and bullets follow the camera. Nothing on the floor scrolls.
+  // Floor: horizon glow, cross lines and lane lines. The camera is fixed, so these are static.
   drawFloor(g, base, line) {
     const e = this.e;
     if (e <= 0) return;
@@ -87,23 +76,23 @@ export class View {
     g.globalAlpha = 0.5 * e;
     g.fillStyle = line;
     g.fillRect(0, HORIZON, W, 1);
-    // cross lines: fixed field rows, drawn at their fixed reference perspective
+    // cross lines: fixed field rows, drawn with the fixed camera
     g.strokeStyle = line;
     g.lineWidth = 1;
     const STEP = 34, span = H + 200;
     for (let z = STEP; z < span; z += STEP) {
       const y = H - z;
       if (y < -60 || y > H + 60) continue;
-      const p = refProject(0, y);
+      const p = this.project(0, y);
       if (p.y < HORIZON + 1 || p.y > H) continue;
       g.globalAlpha = Math.min(0.5, 0.12 + 0.45 * p.s) * e;
-      const a = refProject(-400, y), b = refProject(W + 400, y);
+      const a = this.project(-400, y), b = this.project(W + 400, y);
       g.beginPath(); g.moveTo(a.x, p.y); g.lineTo(b.x, p.y); g.stroke();
     }
     // lane lines: converge toward the vanishing point at the horizon
-    const yNear = Math.min(H, H - REF_CAMZ - MIN_D);
+    const yNear = Math.min(H, H - this.camZ - MIN_D);
     for (let x = 0; x <= W; x += 80) {
-      const a = refProject(x, -40), b = refProject(x, yNear);
+      const a = this.project(x, -40), b = this.project(x, yNear);
       g.globalAlpha = 0.22 * e;
       g.beginPath(); g.moveTo(a.x, a.y); g.lineTo(b.x, b.y); g.stroke();
     }
