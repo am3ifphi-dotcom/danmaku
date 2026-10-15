@@ -29,7 +29,6 @@ export class View {
   constructor() {
     this.k = 0;        // linear blend 0..1
     this.camZ = null;  // camera position along the depth axis (smoothed)
-    this.scroll = 0;   // floor scroll (forward motion), only advances while 3D is on
   }
 
   get e() { return smooth(this.k); }
@@ -43,7 +42,6 @@ export class View {
     this.camZ += (target - this.camZ) * FOLLOW; // damped follow: the ship moves in depth on screen
     const goal = want3d ? 1 : 0;
     this.k = Math.min(1, Math.max(0, this.k + Math.sign(goal - this.k) * BLEND_STEP));
-    if (this.k > 0) this.scroll += 1.6 * this.e;
   }
 
   // Pure perspective projection of a field point onto the screen (ground plane).
@@ -65,7 +63,8 @@ export class View {
   // Vertical squash for ground-plane circles (rings, safe zone).
   squash() { return lerp(1, FLAT, this.e); }
 
-  // Floor: horizon glow, scrolling cross lines (moving toward the camera) and lane lines.
+  // Floor: horizon glow, static cross lines and lane lines. No stage scroll: the stage stays still,
+  // the boss on the far plane is the only source of the attack.
   drawFloor(g, base, line) {
     const e = this.e;
     if (e <= 0) return;
@@ -82,8 +81,7 @@ export class View {
     g.strokeStyle = line;
     g.lineWidth = 1;
     const STEP = 34, span = H + 200;
-    const off = this.scroll % STEP;
-    for (let z = STEP - off; z < span; z += STEP) {
+    for (let z = STEP; z < span; z += STEP) {
       const y = H - z;
       if (y < -60 || y > H + 60) continue;
       const p = this.P(0, y);
