@@ -5,7 +5,8 @@
 //   * the field is treated as a floor. y increases toward the player (near), decreases away (far);
 //   * the camera sits BACK units behind the player (in field depth), so the player stays on screen
 //     and moving the ship up/down reads as moving forward/backward in depth;
-//   * the camera follows the player with smoothing (lag), so the view glides rather than snaps;
+//   * the camera follows only part of the ship's up/down travel (FOLLOW_FRAC) with damping, so the ship
+//     visibly moves in depth (its screen height and scale change) instead of being pinned to one spot;
 //   * k blends between the flat 2D view (k=0) and the perspective view (k=1) over ~1 s, so a phase
 //     start/end is a continuous transition, not a cut.
 // Every draw helper below returns the identity mapping when k=0, so 2D phases are unchanged.
@@ -17,11 +18,9 @@ export const HORIZON = 40;    // screen y of the horizon
 const MIN_D = 8;              // depth clamp for anything at / behind the camera plane
 const FLAT = 0.5;             // vertical squash of ground-plane circles in 3D
 const BLEND_STEP = 1 / 60;    // k changes by this per frame (≈1 s to fully switch)
-
-// In 3D phases the ship may not go further back than this field y, so it never passes the boss
-// (a boss between the ship and the camera would turn into a giant foreground sprite).
-export const DEPTH_MIN_Y = 170;
-export const FLAT_MIN_Y = 44;
+const FOLLOW = 0.035;         // camera eases toward its target this fraction per frame (smooth)
+const FOLLOW_FRAC = 0.4;      // camera moves only 40% of the ship's up/down travel, so depth changes stay visible
+const REST_Y = 304;           // the ship's resting field y (the camera's reference point)
 
 export const smooth = k => k * k * (3 - 2 * k);
 export const lerp = (a, b, t) => a + (b - a) * t;
@@ -38,9 +37,10 @@ export class View {
 
   // Call once per frame. playerY: the player's field y. want3d: the current phase requests 3D.
   update(playerY, want3d) {
-    const target = (H - playerY) - BACK;
+    const anchor = REST_Y + (playerY - REST_Y) * FOLLOW_FRAC; // partial follow
+    const target = (H - anchor) - BACK;
     if (this.camZ === null) this.camZ = target;
-    this.camZ += (target - this.camZ) * 0.12; // smooth follow
+    this.camZ += (target - this.camZ) * FOLLOW; // damped follow: the ship moves in depth on screen
     const goal = want3d ? 1 : 0;
     this.k = Math.min(1, Math.max(0, this.k + Math.sign(goal - this.k) * BLEND_STEP));
     if (this.k > 0) this.scroll += 1.6 * this.e;

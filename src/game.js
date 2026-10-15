@@ -8,7 +8,7 @@ import { FX } from './fx.js';
 import { STAGES, cannonFireAt, cannonAim } from './stages.js';
 import { makeBands } from './assets.js';
 import { TRACKS } from './audio.js';
-import { View, FLAT_MIN_Y, DEPTH_MIN_Y } from './view.js';
+import { View } from './view.js';
 
 const DIFF_ORDER = ['easy', 'normal', 'hard'];
 const SCORE_MULT = { easy: 1, normal: 1.5, hard: 2 };
@@ -137,10 +137,8 @@ class StageRun {
     this.boss.update();
     for (let i = 0; i < this.cannonState.length; i++) if (this.cannonState[i] > 0) this.cannonState[i]--;
     this.B.update(this.player, this.state === 'play' && this.player.invuln === 0 && this.player.down === 0);
-    // the upper movement limit eases with the 3D blend (ship stays in front of the boss)
-    this.player.minY = FLAT_MIN_Y + (DEPTH_MIN_Y - FLAT_MIN_Y) * this.view.e;
     this.player.update(this.game.inputState());
-    // camera: follows the ship; 3D blend only while a cam3d phase is actually being played
+    // camera: trails the ship (damped), so the ship visibly moves in depth; 3D blend only in cam3d phases
     this.view.update(this.player.y, this.state === 'play' && !!(this.phase && this.phase.cam3d));
   }
 
@@ -245,9 +243,17 @@ class StageRun {
     this.drawBackground(g, t);
     if (this.safe) this.drawSafeZone(g, t);
     this.drawCannons(g, t);
-    this.boss.draw(g, this.view);
+    // ship and boss are drawn far-to-near: if the ship is deeper than the boss, it goes behind it
+    const shipBehind = this.view.on &&
+      this.view.project(this.player.x, this.player.y).d > this.view.project(this.boss.x, this.boss.y).d;
+    if (shipBehind) {
+      this.player.draw(g, this.game.input.focus, this.view);
+      this.boss.draw(g, this.view);
+    } else {
+      this.boss.draw(g, this.view);
+      this.player.draw(g, this.game.input.focus, this.view);
+    }
     this.B.draw(g, this.S, t, this.view);
-    this.player.draw(g, this.game.input.focus, this.view);
     this.fx.draw(g, this.view);
     g.restore();
     this.drawHUD(g, t);

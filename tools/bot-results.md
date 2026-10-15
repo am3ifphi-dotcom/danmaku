@@ -24,17 +24,9 @@ Notes
 - Stage 3 HARD reaches 581 bullets on screen. That is the density of the slow final rings. It was not verified visually at this density.
 - Planner fallbacks (no route found, bot stays still) happened 0–14 times in a run. They were not counted as hits.
 
-## Pseudo-3D phases (cam3d) regression re-run
+## Pseudo-3D phases (cam3d): NOTE on stale results
 
-Flagged phases: stage 1 phase 2 (SHELL SPIRAL) and stage 3 phase 4 (FINAL: GREAT VORTEX).
-In those phases the ship's upper limit is raised to y=170 (view.js DEPTH_MIN_Y) so it never passes the boss.
-bot2.cjs, 3 seeds each, after the change:
-
-| stage | difficulty | outcomes | hits per run | maxBullets |
-|---|---|---|---|---|
-| 1 | normal | 3/3 CLEARED | 0,0,0 | 122 |
-| 1 | hard | 3/3 CLEARED | 0,0,0 | 128 |
-| 3 | normal | 3/3 CLEARED | 1,1,0 | 399 |
-| 3 | hard | 3/3 CLEARED | 0,0,0 | 581 |
-
-Visual check (screenshots, not committed): 3D floor, projected spiral/boss and safe-zone ellipse confirmed in stage 1 phase 2 and stage 3 final.
+The table that used to be here was measured with a temporary ship upper limit (y=170) in cam3d phases.
+That limit has been removed again (ship movement is back to the 2D range), so the table no longer applies.
+The bot2.cjs script was lost when the sandbox was re-provisioned, so the cam3d regression was NOT re-run after the revert.
+Camera changes are visual only (view.js); collision and movement code is unchanged from the 2D build.

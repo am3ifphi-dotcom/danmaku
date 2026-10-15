@@ -14,7 +14,6 @@ export class Player {
     this.lives = diff.lives;
     this.maxLives = diff.lives;
     this.invuln = 0;       // frames of invincibility
-    this.minY = 44;        // upper movement limit (raised in 3D phases, see view.js)
     this.down = 0;         // frames of the "knocked out" animation (no control)
     this.hitAnim = 0;      // frames of hit animation
     this.facing = 1;
@@ -53,7 +52,7 @@ export class Player {
     this.y += dy * sp;
     if (Math.abs(dx) > 0.1) this.facing = dx < 0 ? -1 : 1;
     this.x = Math.max(16, Math.min(W - 16, this.x));
-    this.y = Math.max(this.minY, Math.min(H - 20, this.y));
+    this.y = Math.max(44, Math.min(H - 20, this.y));
   }
 
   // Called when the player is hit (lives already decremented by the caller).
