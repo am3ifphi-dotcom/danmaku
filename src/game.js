@@ -140,7 +140,7 @@ class StageRun {
     this.B.update(this.player, this.state === 'play' && this.player.invuln === 0 && this.player.down === 0);
     this.player.update(this.game.inputState());
     // camera: trails the ship (damped), so the ship visibly moves in depth; 3D blend only in cam3d phases
-    this.view.update(this.state === 'play' && !!(this.phase && this.phase.cam3d));
+    this.view.update(this.player.y, this.state === 'play' && !!(this.phase && this.phase.cam3d));
     this.bgFreeze += this.view.e;
   }
 
