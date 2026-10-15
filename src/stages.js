@@ -33,7 +33,7 @@ const stage1 = {
       },
     },
     {
-      name: '螺旋の貝殻', en: 'SHELL SPIRAL', dur: 30,
+      name: '螺旋の貝殻', en: 'SHELL SPIRAL', dur: 30, cam3d: true,
       path: c => ({ x: W / 2 + Math.sin(c.T * 0.005) * 60, y: 120 }),
       tick(c) {
         const cyc = Math.round(300 * c.ivl);
@@ -235,7 +235,7 @@ const stage3 = {
       },
     },
     {
-      name: '最終：中心の大螺旋', en: 'FINAL: GREAT VORTEX', dur: 40,
+      name: '最終：中心の大螺旋', en: 'FINAL: GREAT VORTEX', dur: 40, cam3d: true,
       path: c => ({ x: W / 2 + Math.sin(c.T * 0.01) * 60, y: 92 }),
       safe: () => ({ x: W / 2, y: H / 2, r: 62 }),
       tick(c) {

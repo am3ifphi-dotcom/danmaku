@@ -3,6 +3,7 @@
 //   hit (reaction to a close call / phase change), transition (phase change), defeat (stage cleared)
 // Frame sequences come from the Pixel Frog / PixelRubro sprite pack (see CREDITS.md).
 // Procedural motion (bobbing, sway, flash, shake, scale pulse) is layered on top of the frames.
+import { FLAT_VIEW, lerp } from './view.js';
 import { SPRITE_SCALE, W, H } from './config.js';
 
 const ANIM_FPS = 10; // Pixel Frog animations run at 10 fps (100 ms per frame)
@@ -172,24 +173,29 @@ export class Boss {
     return frames[Math.min(idx, frames.length - 1)];
   }
 
-  draw(g) {
+  draw(g, view = FLAT_VIEW) {
     const bob = Math.sin(this.clock * 0.04) * this.def.bob;
     const sway = Math.sin(this.clock * 0.02) * 2;
     const shakeX = this.shake ? (Math.random() - 0.5) * 6 : 0;
     const shakeY = this.shake ? (Math.random() - 0.5) * 4 : 0;
     const pulse = this.pulse ? 1 + this.pulse * 0.004 : 1;
+    // in 3D the boss is a billboard at its depth; scale is boosted a little so it stays the centrepiece
+    const p = view.P(this.x, this.y);
+    const bs = view.on ? lerp(1, p.s * 1.6, view.e) : 1;
     for (const part of this.def.parts) {
       if (part.onlyStates && !part.onlyStates.includes(this.state)) continue;
       const img = this.frameFor(part, this.state);
       if (!img) continue;
       const pw = img.width * SPRITE_SCALE, ph = img.height * SPRITE_SCALE;
       // dx/dy are logical (640x360) pixels from the boss centre
-      const cx = this.x + part.dx + (part.tag === 'left' ? -sway : part.tag === 'right' ? sway : 0) + shakeX;
-      const cy = this.y + bob + part.dy + shakeY;
+      const ox = part.dx + (part.tag === 'left' ? -sway : part.tag === 'right' ? sway : 0) + shakeX;
+      const oy = bob + part.dy + shakeY;
+      const cx = p.x + ox * bs;
+      const cy = p.y + oy * bs;
       g.save();
       g.imageSmoothingEnabled = false;
       g.translate(Math.round(cx), Math.round(cy));
-      g.scale((part.flip ? -1 : 1) * pulse, pulse);
+      g.scale((part.flip ? -1 : 1) * pulse * bs, pulse * bs);
       if (this.flash > 0) g.filter = 'brightness(2.2)';
       g.drawImage(img, Math.round(-pw / 2), Math.round(-ph / 2), pw, ph);
       g.restore();

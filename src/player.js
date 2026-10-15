@@ -1,6 +1,7 @@
 // Player: Captain Clown Nose (Pixel Frog, CC0). Never attacks — dodging only.
 // Small hit circle (2.5px) and a larger graze circle (14px). Focus (Shift) halves speed.
 import { W, H, SPRITE_SCALE, PLAYER_ALPHA } from './config.js';
+import { FLAT_VIEW } from './view.js';
 
 export class Player {
   constructor(sprites, diff) {
@@ -13,6 +14,7 @@ export class Player {
     this.lives = diff.lives;
     this.maxLives = diff.lives;
     this.invuln = 0;       // frames of invincibility
+    this.minY = 44;        // upper movement limit (raised in 3D phases, see view.js)
     this.down = 0;         // frames of the "knocked out" animation (no control)
     this.hitAnim = 0;      // frames of hit animation
     this.facing = 1;
@@ -51,7 +53,7 @@ export class Player {
     this.y += dy * sp;
     if (Math.abs(dx) > 0.1) this.facing = dx < 0 ? -1 : 1;
     this.x = Math.max(16, Math.min(W - 16, this.x));
-    this.y = Math.max(44, Math.min(H - 20, this.y));
+    this.y = Math.max(this.minY, Math.min(H - 20, this.y));
   }
 
   // Called when the player is hit (lives already decremented by the caller).
@@ -60,7 +62,7 @@ export class Player {
     this.hitAnim = 56;
   }
 
-  draw(g, focus) {
+  draw(g, focus, view = FLAT_VIEW) {
     let img;
     const frames = (key) => this.S.frames(key);
     if (this.down > 0) {
@@ -80,23 +82,27 @@ export class Player {
     // blink while invincible
     if (this.invuln > 0 && this.down === 0 && Math.floor(this.invuln / 4) % 2 === 0) return;
     const w = img.width * SPRITE_SCALE, h = img.height * SPRITE_SCALE;
+    // the camera follows the ship, so its draw scale is the perspective scale at its depth (1 when flat)
+    const p = view.P(this.x, this.y);
+    const s = p.s;
     g.save();
     g.imageSmoothingEnabled = false;
-    g.translate(Math.round(this.x), Math.round(this.y));
-    g.scale(this.facing, 1);
+    g.translate(Math.round(p.x), Math.round(p.y));
+    g.scale(this.facing * s, s);
     g.globalAlpha = PLAYER_ALPHA;
     g.drawImage(img, Math.round(-w / 2), Math.round(-h / 2) - 4, w, h);
     g.restore();
     // hitbox dot (always visible but tiny; ring when focused so the player can see it)
+    const hr = Math.max(1.5, this.hit * s), gr = this.graze * s;
     g.save();
     g.fillStyle = '#101820';
-    g.beginPath(); g.arc(this.x, this.y, this.hit + 1, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.arc(p.x, p.y, hr + 1, 0, Math.PI * 2); g.fill();
     g.fillStyle = '#ffffff';
-    g.beginPath(); g.arc(this.x, this.y, this.hit, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.arc(p.x, p.y, hr, 0, Math.PI * 2); g.fill();
     if (focus) {
       g.strokeStyle = 'rgba(255,255,255,0.7)';
       g.lineWidth = 1;
-      g.beginPath(); g.arc(this.x, this.y, this.graze, 0, Math.PI * 2); g.stroke();
+      g.beginPath(); g.arc(p.x, p.y, gr, 0, Math.PI * 2); g.stroke();
     }
     g.restore();
   }

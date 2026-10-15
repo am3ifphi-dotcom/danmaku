@@ -1,6 +1,7 @@
 // Visual effects: warning rings / bars (telegraphs), particles, sprite-animation effects,
 // screen flash and shake, and centred banner text. All effects are kept deliberately small
 // (pixel squares, few particles) so they never hide bullets.
+import { FLAT_VIEW } from './view.js';
 import { W, H } from './config.js';
 
 export class FX {
@@ -59,38 +60,43 @@ export class FX {
   }
 
   // drawn above bullets
-  draw(g) {
+  draw(g, view = FLAT_VIEW) {
+    const sq = view.squash();
     for (const r of this.rings) {
       const k = r.t / r.dur;
       const rad = r.r0 + (r.r1 - r.r0) * k;
+      const p = view.P(r.x, r.y);
       g.save();
       g.globalAlpha = (1 - k) * 0.9;
       g.strokeStyle = r.color;
       g.lineWidth = 1;
       g.setLineDash([4, 4]);
-      g.beginPath(); g.arc(r.x, r.y, rad, 0, Math.PI * 2); g.stroke();
+      g.beginPath(); g.ellipse(p.x, p.y, rad * p.s, rad * p.s * sq, 0, 0, Math.PI * 2); g.stroke();
       g.restore();
     }
     for (const b of this.bars) {
       const k = b.t / b.dur;
+      const p0 = view.P(b.x0, b.y), p1 = view.P(b.x1, b.y);
       g.save();
       g.globalAlpha = (0.35 + 0.35 * Math.sin(b.t * 0.6)) * (1 - k * 0.5);
       g.fillStyle = b.color;
-      g.fillRect(b.x0, b.y - 1, b.x1 - b.x0, 2);
+      g.fillRect(p0.x, p0.y - 1, p1.x - p0.x, 2);
       g.restore();
     }
     for (const p of this.parts) {
+      const q = view.P(p.x, p.y);
       g.globalAlpha = Math.max(0, p.life / p.max);
       g.fillStyle = p.color;
-      g.fillRect(Math.round(p.x), Math.round(p.y), 2, 2);
+      g.fillRect(Math.round(q.x), Math.round(q.y), 2 * q.s, 2 * q.s);
     }
     g.globalAlpha = 1;
     for (const a of this.anims) {
       const idx = Math.min(a.frames.length - 1, Math.floor(a.t * a.fps / 60));
       const img = a.frames[idx];
-      const w = img.width * a.scale, h = img.height * a.scale;
+      const q = view.P(a.x, a.y);
+      const w = img.width * a.scale * q.s, h = img.height * a.scale * q.s;
       g.imageSmoothingEnabled = false;
-      g.drawImage(img, Math.round(a.x - w / 2), Math.round(a.y - h / 2), w, h);
+      g.drawImage(img, Math.round(q.x - w / 2), Math.round(q.y - h / 2), w, h);
     }
     if (this.flashA > 0) {
       g.globalAlpha = this.flashA;

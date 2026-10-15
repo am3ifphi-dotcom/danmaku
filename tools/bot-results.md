@@ -23,3 +23,18 @@ Notes
 - Earlier versions of the bot died on some hard runs. Those failures were tracked to bot bugs (laser pivot motion, out-of-field targets, unpredicted homing) and to one design issue (the homing rate of the stage 3 phase 2 fan, lowered from 0.008 to 0.006 with homeDelay 110 → 130). The table shows the final version.
 - Stage 3 HARD reaches 581 bullets on screen. That is the density of the slow final rings. It was not verified visually at this density.
 - Planner fallbacks (no route found, bot stays still) happened 0–14 times in a run. They were not counted as hits.
+
+## Pseudo-3D phases (cam3d) regression re-run
+
+Flagged phases: stage 1 phase 2 (SHELL SPIRAL) and stage 3 phase 4 (FINAL: GREAT VORTEX).
+In those phases the ship's upper limit is raised to y=170 (view.js DEPTH_MIN_Y) so it never passes the boss.
+bot2.cjs, 3 seeds each, after the change:
+
+| stage | difficulty | outcomes | hits per run | maxBullets |
+|---|---|---|---|---|
+| 1 | normal | 3/3 CLEARED | 0,0,0 | 122 |
+| 1 | hard | 3/3 CLEARED | 0,0,0 | 128 |
+| 3 | normal | 3/3 CLEARED | 1,1,0 | 399 |
+| 3 | hard | 3/3 CLEARED | 0,0,0 | 581 |
+
+Visual check (screenshots, not committed): 3D floor, projected spiral/boss and safe-zone ellipse confirmed in stage 1 phase 2 and stage 3 final.

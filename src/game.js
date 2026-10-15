@@ -8,6 +8,7 @@ import { FX } from './fx.js';
 import { STAGES, cannonFireAt, cannonAim } from './stages.js';
 import { makeBands } from './assets.js';
 import { TRACKS } from './audio.js';
+import { View, FLAT_MIN_Y, DEPTH_MIN_Y } from './view.js';
 
 const DIFF_ORDER = ['easy', 'normal', 'hard'];
 const SCORE_MULT = { easy: 1, normal: 1.5, hard: 2 };
@@ -36,6 +37,7 @@ class StageRun {
     this.boss.homeX = W / 2; this.boss.homeY = 96;
     this.B = new Bullets();
     this.fx = new FX(game.sprites);
+    this.view = new View();  // pseudo-3D camera (only active in phases with cam3d)
     this.phaseIdx = 0;
     this.phaseT = 0;     // frames in phase
     this.T = 0;          // frames in stage (play only)
@@ -135,7 +137,11 @@ class StageRun {
     this.boss.update();
     for (let i = 0; i < this.cannonState.length; i++) if (this.cannonState[i] > 0) this.cannonState[i]--;
     this.B.update(this.player, this.state === 'play' && this.player.invuln === 0 && this.player.down === 0);
+    // the upper movement limit eases with the 3D blend (ship stays in front of the boss)
+    this.player.minY = FLAT_MIN_Y + (DEPTH_MIN_Y - FLAT_MIN_Y) * this.view.e;
     this.player.update(this.game.inputState());
+    // camera: follows the ship; 3D blend only while a cam3d phase is actually being played
+    this.view.update(this.player.y, this.state === 'play' && !!(this.phase && this.phase.cam3d));
   }
 
   updateIntro() {
@@ -169,6 +175,11 @@ class StageRun {
       this.boss.y += (p.y - this.boss.y) * 0.1;
     }
     this.phase.tick(c);
+    if (this.phaseT === 1 && this.phase.cam3d) {
+      // entering a depth phase: a short flash, the view itself glides in over ~1 s
+      this.fx.flash('#c8f4ff', 0.4);
+      this.audio.sfx('warn');
+    }
     // tension layer (extra hats, higher arpeggio) for the final 10 seconds of each phase
     const phaseRemain = this.phase.dur * 60 - this.phaseT;
     this.audio.setLayer(phaseRemain < 600 ? 1 : 0);
@@ -234,10 +245,10 @@ class StageRun {
     this.drawBackground(g, t);
     if (this.safe) this.drawSafeZone(g, t);
     this.drawCannons(g, t);
-    this.boss.draw(g);
-    this.B.draw(g, this.S, t);
-    this.player.draw(g, this.game.input.focus);
-    this.fx.draw(g);
+    this.boss.draw(g, this.view);
+    this.B.draw(g, this.S, t, this.view);
+    this.player.draw(g, this.game.input.focus, this.view);
+    this.fx.draw(g, this.view);
     g.restore();
     this.drawHUD(g, t);
   }
@@ -245,7 +256,11 @@ class StageRun {
   drawBackground(g, t) {
     g.drawImage(this.bg, 0, 0);
     const d = this.def;
+    const e = this.view.e;
+    // depth floor (cam3d phases) — the flat sea band fades out as the floor takes over
+    if (e > 0) this.view.drawFloor(g, d.bg.sea, d.bg.accent);
     // sea band
+    g.globalAlpha = 1 - e * 0.85;
     g.fillStyle = d.bg.sea;
     g.fillRect(0, H - 56, W, 56);
     g.fillStyle = d.bg.accent;
@@ -253,6 +268,7 @@ class StageRun {
       const off = ((t * 0.5 + y * 3) % 48);
       for (let x = -off; x < W; x += 48) g.fillRect(Math.round(x), y, 16, 1);
     }
+    g.globalAlpha = 1;
     // parallax clouds (Pixel Frog background pieces)
     const clouds = this.S.map['cloud_bg'];
     const c1 = clouds[4], c2 = clouds[5], c3 = clouds[6];
@@ -278,13 +294,15 @@ class StageRun {
   drawSafeZone(g, t) {
     const s = this.safe;
     const pulse = 0.5 + 0.5 * Math.sin(t * 0.08);
+    // the safe circle is a ground-plane circle: project its centre/radius with the view
+    const p = this.view.P(s.x, s.y), rx = s.r * p.s, ry = rx * this.view.squash();
     g.save();
     g.fillStyle = 'rgba(255,255,255,0.05)';
-    g.beginPath(); g.arc(s.x, s.y, s.r, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.ellipse(p.x, p.y, rx, ry, 0, 0, Math.PI * 2); g.fill();
     g.setLineDash([3, 5]);
     g.strokeStyle = `rgba(255,255,255,${0.25 + 0.2 * pulse})`;
     g.lineWidth = 1;
-    g.beginPath(); g.arc(s.x, s.y, s.r, 0, Math.PI * 2); g.stroke();
+    g.beginPath(); g.ellipse(p.x, p.y, rx, ry, 0, 0, Math.PI * 2); g.stroke();
     g.restore();
   }
 

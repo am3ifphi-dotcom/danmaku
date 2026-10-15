@@ -1,5 +1,6 @@
 // Bullet engine: straight / homing / turn-at-distance / edge-bounce / curved (orbit) / delayed bullets,
 // rotating lasers, safe-zone killing, collision and graze detection.
+import { FLAT_VIEW, lerp } from './view.js';
 import { W, H } from './config.js';
 
 // Bullet options (all optional except x, y, vx, vy):
@@ -149,23 +150,43 @@ export class Bullets {
     ls.length = lw;
   }
 
-  draw(g, sprites, t) {
+  draw(g, sprites, t, view = FLAT_VIEW) {
+    const e = view.e;
     // lasers beneath bullets
-    for (const l of this.lasers) drawLaser(g, l, t);
-    for (const b of this.list) {
+    for (const l of this.lasers) drawLaser(g, l, t, view);
+    // in 3D draw far bullets first so near ones overlap them
+    const items = this.list.map(b => ({ b, p: view.P(b.x, b.y) }));
+    if (e > 0) items.sort((a, c) => a.p.s - c.p.s);
+    for (const { b, p } of items) {
+      if (p.s > 6) continue; // behind / too close to the camera plane
       if (b.delay > 0) {
         // spawn indicator: a small pulsing ring so the player can read where bullets will come from
         const k = 0.5 + 0.5 * Math.sin((b.delay + t) * 0.5);
         g.globalAlpha = 0.25 + 0.35 * k;
         g.fillStyle = '#ffffff';
-        g.fillRect(Math.round(b.x) - 1, Math.round(b.y) - 1, 2, 2);
+        const q = Math.max(1, 2 * p.s);
+        g.fillRect(Math.round(p.x - q / 2), Math.round(p.y - q / 2), q, q);
         g.globalAlpha = 1;
         continue;
       }
       const img = b.sprite || sprites.procedural.orb[b.color] || sprites.procedural.orb.white;
-      const hw = img.width / 2;
-      g.globalAlpha = b.fade ? Math.max(0, 1 - b.fade / 14) : 1;
-      g.drawImage(img, Math.round(b.x - hw), Math.round(b.y - hw));
+      const sc = Math.max(0.2, p.s);
+      const w = img.width * sc;
+      // far bullets fade slightly so the depth reads
+      const depthA = e > 0 ? lerp(1, Math.min(1, 0.35 + 0.65 * p.s), e) : 1;
+      const fadeA = b.fade ? Math.max(0, 1 - b.fade / 14) : 1;
+      if (e > 0.05) {
+        // motion streak along the path: shows depth (fast bullets read as moving toward / away from the camera)
+        const q = view.P(b.x - b.vx * 2.5, b.y - b.vy * 2.5);
+        g.globalAlpha = 0.3 * e * depthA * fadeA;
+        g.strokeStyle = b.color === 'teal' ? '#9ff6e4' : '#ffffff';
+        g.lineWidth = Math.max(1, 2 * sc);
+        g.beginPath(); g.moveTo(q.x, q.y); g.lineTo(p.x, p.y); g.stroke();
+        g.imageSmoothingEnabled = false;
+      }
+      g.globalAlpha = fadeA * depthA;
+      if (e > 0) g.drawImage(img, Math.round(p.x - w / 2), Math.round(p.y - w / 2), w, w);
+      else g.drawImage(img, Math.round(b.x - img.width / 2), Math.round(b.y - img.width / 2));
     }
     g.globalAlpha = 1;
   }
@@ -181,19 +202,41 @@ export function pointToLine(px, py, cx, cy, ang) {
   return Math.hypot(px - qx, py - qy);
 }
 
-function drawLaser(g, l, t) {
+// Field points along the laser (clipped to the field box), projected through the view.
+function laserPath(l, view) {
   const dx = Math.cos(l.ang), dy = Math.sin(l.ang);
-  const x1 = l.x - dx * 700, y1 = l.y - dy * 700;
-  const x2 = l.x + dx * 700, y2 = l.y + dy * 700;
+  if (!view.on) return [[l.x - dx * 700, l.y - dy * 700, 1], [l.x + dx * 700, l.y + dy * 700, 1]];
+  const pts = [];
+  for (let i = 0; i <= 120; i++) {
+    const tt = -700 + (1400 * i) / 120;
+    const x = l.x + dx * tt, y = l.y + dy * tt;
+    if (x < -40 || x > W + 40 || y < -40 || y > H + 40) continue;
+    const p = view.P(x, y);
+    pts.push([p.x, p.y, p.s]);
+  }
+  return pts;
+}
+
+function strokePath(g, pts) {
+  if (pts.length < 2) return;
+  g.beginPath();
+  g.moveTo(pts[0][0], pts[0][1]);
+  for (let i = 1; i < pts.length; i++) g.lineTo(pts[i][0], pts[i][1]);
+  g.stroke();
+}
+
+function drawLaser(g, l, t, view = FLAT_VIEW) {
+  const pts = laserPath(l, view);
+  const sc = pts.length ? pts[Math.floor(pts.length / 2)][2] : 1;
   if (l.age <= l.warn) {
     // telegraph: thin dashed beam, pulsing alpha
     const a = 0.25 + 0.25 * Math.sin((l.age + t) * 0.4);
     g.save();
     g.globalAlpha = a;
     g.strokeStyle = '#ffd6e0';
-    g.lineWidth = 1;
+    g.lineWidth = Math.max(1, sc);
     g.setLineDash([6, 6]);
-    g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke();
+    strokePath(g, pts);
     g.restore();
     return;
   }
@@ -202,15 +245,15 @@ function drawLaser(g, l, t) {
   g.lineCap = 'round';
   g.globalAlpha = 0.28 * fadeIn;
   g.strokeStyle = '#ff5d7a';
-  g.lineWidth = l.thick + 10;
-  g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke();
+  g.lineWidth = (l.thick + 10) * sc;
+  strokePath(g, pts);
   g.globalAlpha = 0.85 * fadeIn;
   g.strokeStyle = '#ff3d62';
-  g.lineWidth = l.thick;
-  g.stroke();
+  g.lineWidth = l.thick * sc;
+  strokePath(g, pts);
   g.globalAlpha = fadeIn;
   g.strokeStyle = '#fff5f8';
-  g.lineWidth = Math.max(2, l.thick * 0.35);
-  g.stroke();
+  g.lineWidth = Math.max(2, l.thick * 0.35) * sc;
+  strokePath(g, pts);
   g.restore();
 }
