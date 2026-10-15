@@ -175,15 +175,6 @@ export class Bullets {
       // far bullets fade slightly so the depth reads
       const depthA = e > 0 ? lerp(1, Math.min(1, 0.35 + 0.65 * p.s), e) : 1;
       const fadeA = b.fade ? Math.max(0, 1 - b.fade / 14) : 1;
-      if (e > 0.05) {
-        // motion streak along the path: shows depth (fast bullets read as moving toward / away from the camera)
-        const q = view.P(b.x - b.vx * 2.5, b.y - b.vy * 2.5);
-        g.globalAlpha = 0.3 * e * depthA * fadeA;
-        g.strokeStyle = b.color === 'teal' ? '#9ff6e4' : '#ffffff';
-        g.lineWidth = Math.max(1, 2 * sc);
-        g.beginPath(); g.moveTo(q.x, q.y); g.lineTo(p.x, p.y); g.stroke();
-        g.imageSmoothingEnabled = false;
-      }
       g.globalAlpha = fadeA * depthA;
       if (e > 0) g.drawImage(img, Math.round(p.x - w / 2), Math.round(p.y - w / 2), w, w);
       else g.drawImage(img, Math.round(b.x - img.width / 2), Math.round(b.y - img.width / 2));
