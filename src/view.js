@@ -20,8 +20,8 @@ const REST_Y = 304;           // the ship's resting field y (the camera's refere
 const MIN_D = 8;              // depth clamp for anything at / behind the camera plane
 const FLAT = 0.5;             // vertical squash of ground-plane circles in 3D
 const BLEND_STEP = 1 / 60;    // k changes by this per frame (≈1 s to fully switch)
-const FOLLOW = 0.035;         // camera eases toward its target this fraction per frame (smooth)
-const FOLLOW_FRAC = 0.4;      // camera moves 40% of the ship's up/down travel (depth stays visible)
+const FOLLOW = 1;              // camera snaps to its target every frame (instant follow)
+const FOLLOW_FRAC = 1.0;      // camera follows 100% of the ship's up/down travel
 
 // The camera position when the ship rests.
 const CAMZ = (H - REST_Y) - BACK;
